@@ -1,33 +1,54 @@
-<div class="flex flex-col lg:flex-row min-h-screen bg-gray-100">
+<div class="flex flex-col lg:flex-row min-h-screen bg-[#F72C5B]">
   <!-- Conteneur principal -->
   
   <!-- Section gauche : Nom de la room et chat -->
   <div class="flex-1 flex flex-col p-4">
     <!-- Nom de la room -->
-    <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+    <div class="bg-[#FF748B] shadow-md rounded-lg p-4 mb-4">
       <h1 class="text-xl font-bold text-gray-800">Room: {{ room }}</h1>
     </div>
 
     <!-- Zone de chat -->
-    <div class="flex-1 bg-white shadow-md rounded-lg p-4 overflow-y-auto">
-      <div *ngFor="let message of messages" class="mb-4">
-        <p>
-          <span class="font-bold text-gray-700">{{ message.sender }} : </span>
-          <span>{{ message.text }}</span>
-        </p>
+    <div class="flex-1 bg-[#FF748B] shadow-md rounded-lg p-4">
+      <div class="flex-1 overflow-y-auto max-h-[calc(100vh-225px)] lg:max-h-[calc(100vh-275px)]">
+        <div *ngFor="let message of messages" class="mb-4">
+          <div *ngIf="message.sender === 'Question'" class="flex items-center">
+            <hr class="flex-grow border-t border-gray-300">
+            <span class="mx-4 text-center font-bold text-gray-800">{{ message.text }}</span>
+            <hr class="flex-grow border-t border-gray-300">
+          </div>
+          <p *ngIf="message.sender !== 'Question'" class="p-4">
+            <span class="font-bold text-gray-700">{{ message.sender }} : </span>
+            <span>{{ message.text }}</span>
+          </p>
+        </div>
       </div>
     </div>
 
     <!-- Input pour envoyer des messages -->
-    <div class="mt-4">
+    <div class="mt-4 ">
       <input 
         [(ngModel)]="newMessage" 
         placeholder="Type a message..." 
         class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
+        [disabled]="isgameEnded"
+        [disabled]="hasAnswered"
       />
       <button 
+        *ngIf="isgameStarted == false"
+        (click)="sendMessage()" 
+        class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition opacity-50 cursor-not-allowed"
+        [disabled]="isgameEnded"
+        [disabled]="hasAnswered"
+      >
+        Send
+      </button>
+      <button 
+        *ngIf="isgameStarted == true"
         (click)="sendMessage()" 
         class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition"
+        [disabled]="isgameEnded"
+        [disabled]="hasAnswered"
       >
         Send
       </button>
@@ -35,15 +56,57 @@
   </div>
 
   <!-- Section droite : Liste des joueurs -->
-  <div class="bg-white shadow-md rounded-lg p-4 w-full lg:w-1/4">
+  <div class="bg-[#FF748B] shadow-md rounded-lg p-4 w-full lg:w-1/4">
     <h2 class="text-lg font-bold text-gray-800 mb-4">Players:</h2>
     <ul>
       <li 
         *ngFor="let player of players" 
-        class="py-2 border-b border-gray-300"
+        class="text-xl py-2 border-b border-gray-300 text-gray-800 font-semibold" 
       >
-        {{ player.username }}
+        {{ player.pseudo }}
+        <select class="ml-4 p-2 border border-gray-300 rounded-lg" [(ngModel)]="playerChoices[player.username]">
+          <option *ngFor="let p of players" [value]="p.username">{{ p.username }}</option>
+        </select>
       </li>
     </ul>
   </div>
+
+  <!-- Modal plein écran : bouton Start -->
+  <div 
+    *ngIf="isHost && isgameStarted == false"
+    (click)="startGame()" 
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+  >
+    <button 
+      class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transition"
+    >
+      Start Game
+    </button>
+  </div>
+
+  <div 
+    *ngIf="isHost == false && isgameStarted == false"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+  >
+    <button 
+      class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transition"
+    >
+      Waiting for host to start the game
+    </button>
+  </div>
+
+  <!-- Section fin de jeu -->
+  <div class="flex-1 flex flex-col p-4" *ngIf="isgameEnded && showScores">
+    <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+      <h1 class="text-2xl font-bold text-gray-800 mb-4">Endgame</h1>
+      <h2 class="text-lg font-bold text-gray-800 mb-4">Players:</h2>
+      <ul>
+        <li *ngFor="let player of players" class="py-2 border-b border-gray-300">
+          Le joueur {{ player.username }} se cachait sous l'identité de {{ player.pseudo }}
+        </li>
+      </ul>
+      <h2 class="text-lg font-bold text-gray-800 mb-4">Your Points: {{ userPoints }}</h2>
+    </div>
+  </div>
+
 </div>

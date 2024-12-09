@@ -13,8 +13,8 @@ export class RoomService {
     this.socket = io('http://localhost:3000');
   }
 
-  joinRoom(username: string, room: string) {
-    this.socket.emit('joinRoom', { username, room });
+  joinRoom(username: string, pseudo: string, room: string) {
+    this.socket.emit('joinRoom', { username, pseudo, room });
   }
 
   // Envoyer un message
@@ -29,6 +29,34 @@ export class RoomService {
 
   onUpdatePlayers(callback: (players: any[]) => void) {
     this.socket.on('updatePlayers', callback);
+  }
+
+  startGame(room: string) {
+    this.socket.emit('startGame', { room });
+  }
+
+  onGameStarted(callback: () => void) {
+    this.socket.on('gameStarted', callback);
+  }
+
+  sendQuestion(room: string, question: string) {
+    this.socket.emit('sendQuestion', { room, question });
+  }
+
+  onReceiveQuestion(callback: (question: string) => void) {
+    this.socket.on('receiveQuestion', callback);
+  }
+
+  onNextQuestion(callback: () => void) {
+    this.socket.on('nextQuestion', callback);
+  }
+
+  endGame(room: string) {
+    this.socket.emit('endGame', { room });
+  }
+
+  onGameEnded(callback: (data: { players: any[] }) => void) {
+    this.socket.on('gameEnded', callback);
   }
 
 }
