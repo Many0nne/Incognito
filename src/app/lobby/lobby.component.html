@@ -1,0 +1,27 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+      <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">
+        Join a Room
+      </h1>
+      
+      <input 
+        [(ngModel)]="username" 
+        placeholder="Enter your username" 
+        class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      
+      <input 
+        [(ngModel)]="room" 
+        placeholder="Enter room name" 
+        class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      
+      <button 
+        (click)="joinRoom()" 
+        class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition"
+      >
+        Join
+      </button>
+    </div>
+  </div>
+  

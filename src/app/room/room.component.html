@@ -1,0 +1,49 @@
+<div class="flex flex-col lg:flex-row min-h-screen bg-gray-100">
+  <!-- Conteneur principal -->
+  
+  <!-- Section gauche : Nom de la room et chat -->
+  <div class="flex-1 flex flex-col p-4">
+    <!-- Nom de la room -->
+    <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+      <h1 class="text-xl font-bold text-gray-800">Room: {{ room }}</h1>
+    </div>
+
+    <!-- Zone de chat -->
+    <div class="flex-1 bg-white shadow-md rounded-lg p-4 overflow-y-auto">
+      <div *ngFor="let message of messages" class="mb-4">
+        <p>
+          <span class="font-bold text-gray-700">{{ message.sender }} : </span>
+          <span>{{ message.text }}</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Input pour envoyer des messages -->
+    <div class="mt-4">
+      <input 
+        [(ngModel)]="newMessage" 
+        placeholder="Type a message..." 
+        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
+      />
+      <button 
+        (click)="sendMessage()" 
+        class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition"
+      >
+        Send
+      </button>
+    </div>
+  </div>
+
+  <!-- Section droite : Liste des joueurs -->
+  <div class="bg-white shadow-md rounded-lg p-4 w-full lg:w-1/4">
+    <h2 class="text-lg font-bold text-gray-800 mb-4">Players:</h2>
+    <ul>
+      <li 
+        *ngFor="let player of players" 
+        class="py-2 border-b border-gray-300"
+      >
+        {{ player.username }}
+      </li>
+    </ul>
+  </div>
+</div>
